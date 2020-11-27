@@ -1,3 +1,10 @@
+# Importing in the database
+
+```
+mysql -u root < sakila-schema.sql
+mysql -u root < sakila-data.sql
+```
+
 # Dependencies
 
 ```
