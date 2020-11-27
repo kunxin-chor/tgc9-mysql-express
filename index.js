@@ -41,6 +41,62 @@ async function main() {
         })
     })
 
+    app.get('/actor/create', async(req,res)=>{
+        res.render('create_actor.hbs');
+    })
+
+    app.post('/actor/create', async(req,res)=>{
+        let firstName = req.body.first_name;
+        let lastName = req.body.last_name;
+
+        await connection.execute(`insert into actor (first_name, last_name)
+                                  values (?, ?)`, [firstName, lastName]);
+
+        res.redirect('/');
+
+    });
+
+    // the :actor_id placeholder is for the url to specify which actor we are editing
+    app.get('/actor/:actor_id/update', async (req,res)=>{
+        let [actors] = await connection.execute(`select * from actor where actor_id = ?`,
+         [req.params.actor_id]);
+        let theActor = actors[0];
+ 
+        res.render('edit_actor.hbs',{
+            'actor': theActor
+        });
+    })  
+
+    app.post('/actor/:actor_id/update', async (req,res)=>{
+       let firstName = req.body.first_name;
+       let lastName = req.body.last_name;
+       let actorId = req.params.actor_id;
+
+       await connection.execute(`update actor set first_name = ?, last_name=?
+                                WHERE actor_id = ?`, [firstName, lastName, actorId])
+
+       res.redirect('/');
+
+    })
+
+    app.get('/actor/:actor_id/delete', async(req,res)=>{
+        let theActorToDelete = req.params.actor_id;
+        // BUT we will always get an array back from connection.execute EVEN if there is only one result
+        let [actors] = await connection.execute(`select * from actor where actor_id= ?`, [theActorToDelete])
+        let theActor = actors[0];
+        // res.send(theActor);
+
+        res.render('delete_actor.hbs',{
+            'actor': theActor
+        })
+    })
+
+    app.post('/actor/:actor_id/delete', async(req,res)=>{
+        let actor_id = req.params.actor_id;
+        await connection.execute(`delete from actor where actor_id = ?`, [actor_id]);
+        res.redirect('/')
+    })
+
     app.get('/languages', async (req, res) =>{
         let [languages] = await connection.execute('select * from language');
 

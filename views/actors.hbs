@@ -2,6 +2,7 @@
 
 {{#block 'content'}}
 <h1>Actors</h1>
+<a href="/actor/create" class="btn btn-primary">Add Actor</a>
 <table class="table">
     <thead>
         <tr>
@@ -9,6 +10,7 @@
             <th>First Name</th>
             <th>Last Name</th>
             <th>Last Updated</th>
+            <th></th>
         </tr>
     </thead>
     {{#each actors}}
@@ -17,6 +19,10 @@
         <td>{{this.first_name}}</td>
         <td>{{this.last_name}}</td>
         <td>{{this.last_update}}</td>
+        <td>
+            <a href="/actor/{{this.actor_id}}/update" class="btn btn-success btn-sm">Edit</a>
+            <a href="/actor/{{this.actor_id}}/delete" class="btn btn-danger btn-sm">Delete</a>
+        </td>
     </tr>
     {{/each}}
 </table>
