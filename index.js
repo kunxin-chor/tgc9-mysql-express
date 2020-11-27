@@ -112,6 +112,62 @@ async function main() {
         })
     })
 
+    app.get('/cities', async(req,res)=>{
+
+        // when we do a R for a weak entity that is 1:M relationship
+        // -- to get the full details, we have to do a join
+        let [cities] = await connection.execute(`
+            select * from city join country on
+            city.country_id = country.country_id`
+        );
+        // res.send(cities);
+        res.render('cities.hbs', {
+            'cities': cities
+        })
+
+    })
+
+    app.get('/city/create', async (req,res)=>{
+        let [countries] = await connection.execute('select * from country');
+        res.render('create_city',{
+            'countries': countries
+        })
+    })
+
+    app.post('/city/create', async(req,res)=>{
+        // await connection.execute(`
+        //     insert into city (city, country_id)
+        //     VALUES (?, ?)`, [
+        //         req.body.city,
+        //         req.body.country_id
+        //     ])
+            let city = req.body.city;
+            let country_id = req.body.country_id;
+            await connection.execute(`insert into city (city, country_id)
+                VALUES (?, ?)`, [city, country_id]);
+            res.redirect('/cities')
+        })
+
+    app.get('/city/:city_id/update', async (req,res)=>{
+        let [countries] = await connection.execute('select * from country');
+        let wantedCityID = req.params.city_id;
+        let [cities] = await connection.execute(`select * from city where city_id = ?`, [wantedCityID]);
+        let theCity = cities[0];
+        res.render('edit_city', {
+            'countries': countries,
+            'city': theCity
+        })
+    })
+
+    app.post('/city/:city_id/update', async(req,res)=>{
+        let city = req.body.city;
+        let country_id = req.body.country_id;
+        await connection.execute(`
+            update city set city= ?, country_id = ?
+            WHERE city_id= ?`, [city, country_id, req.params.city_id])
+        res.redirect('/cities');
+    })
+
     app.get('/stores', async (req,res)=>{
         /*
             select store.store_id, address, address2, first_name, last_name from store join staff

@@ -1,0 +1,11 @@
+{{#extends 'base'}}
+
+{{#block 'content'}}
+<ul class="list-group">
+    {{#each cities}}
+    <li class="list-group-item">{{this.city}}, {{this.country}}</li>
+    {{/each}}
+</ul>
+{{/block}}
+
+{{/extends}}
