@@ -54,3 +54,25 @@ mysql -u root
 use sakila;
 describe actor;
 ```
+
+# How to write the route
+
+1. First, add in the 
+```
+app.get('/<whatever-url>/, async(req,res)=>{
+
+})
+```
+
+2. Figure out the query 
+
+3. Test the query in mysql prompt
+
+4. Once it works, use the connection to execute the query
+
+5. Use `res.send` with the results, and then test the route
+and see if it can send back the results
+
+6. Create the hbs file and extend (but don't do the `#each` yet)
+
+7. Create the final output using `#each`

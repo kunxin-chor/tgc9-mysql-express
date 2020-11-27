@@ -41,6 +41,14 @@ async function main() {
         })
     })
 
+    app.get('/languages', async (req, res) =>{
+        let [languages] = await connection.execute('select * from language');
+
+        res.render('languages.hbs', {
+            'lang': languages
+        })
+    })
+
 }
 
 main();
