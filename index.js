@@ -49,6 +49,33 @@ async function main() {
         })
     })
 
+    app.get('/countries', async (req, res)=>{
+        let [countries] = await connection.execute('select * from country');
+        res.render('countries.hbs',{
+            'countries': countries
+        })
+    })
+
+    app.get('/stores', async (req,res)=>{
+        /*
+            select store.store_id, address, address2, first_name, last_name from store join staff
+            on store.manager_staff_id = staff.staff_id
+            join address ON
+            store.address_id = address.address_id
+        */
+        let [stores] = await connection.execute(`
+            select store.store_id, address, address2, first_name, last_name from store join staff
+            on store.manager_staff_id = staff.staff_id
+            join address ON
+            store.address_id = address.address_id
+        `);
+
+        // res.send(stores);
+        res.render('stores.hbs',{
+            'stores': stores
+        })
+    })
+
 }
 
 main();

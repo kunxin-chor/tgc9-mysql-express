@@ -1,0 +1,22 @@
+{{#extends 'base'}}
+{{#block 'content'}}
+<h1>Countries</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Country ID</th>
+            <th>Name</th>
+        </tr>
+    </thead>
+    {{#each countries}}
+        <tr>
+            <td>{{this.country_id}}</td>
+            <td>{{this.country}}</td>
+        </tr>
+    {{/each}}
+</table>
+
+{{/block}}
+
+{{/extends}}
