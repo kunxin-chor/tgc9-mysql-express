@@ -1,0 +1,13 @@
+{{#extends 'base'}}
+
+{{#block 'content'}}
+<h1>Films</h1>
+<ul>
+    {{#each films}}
+        <li>{{this.title}} ({{this.release_year}} )</li>
+    {{/each}}
+
+</ul>
+{{/block}}
+
+{{/extends}}
