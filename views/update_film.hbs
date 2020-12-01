@@ -12,51 +12,52 @@ $(document).ready(function() {
 });
 </script>
 
+
 {{/block}}
 
 {{#block "content"}}
-<h1>Add New Film</h1>
+<h1>Update Film</h1>
 
 <form method="POST">
     <div>
         <label class="form-label">Title</label>
-        <input type="text" class="form-control" name="title"/>
+        <input type="text" class="form-control" name="title" value="{{wanted_film.title}}"/>
     </div>
     <div>
         <label class="form-label">Description</label>
-        <textarea class="form-control" name="description"></textarea>
+        <textarea class="form-control" name="description">{{wanted_film.description}}</textarea>
     </div>
     <div>
         <label class="form-label">Actor</label>
         <select name="actor_id" multiple class="form-control" id="actors">
             {{#each actors}}
-            <option value="{{this.actor_id}}">{{this.first_name}} {{this.last_name}}</option>
+            <option value="{{this.actor_id}}" {{#inArray  ../existing_actors this.actor_id }}selected{{/inArray}}>{{this.first_name}} {{this.last_name}}</option>
             {{/each}}
         </select>
     </div>
     <div>
         <label class="form-label">Release Year</label>
-        <input type="text" class="form-control" name="release_year"/>
+        <input type="text" class="form-control" name="release_year" value="{{wanted_film.release_year}}"/>
     </div>
     <div>
         <label class="form-label">Language</label>
         <select name="language_id" class="form-control">
         {{#each languages}}
-            <option value="{{this.language_id}}">{{this.name}}</option>
+            <option value="{{this.language_id}}" {{#eq this.language_id ../wanted_film.language_id}}selected{{/eq}}>{{this.name}}</option>
         {{/each}}
         </select>
     </div>
     <div>
         <label class="form-label">Rental Duration</label>
-        <input type="text" class="form-control" name="rental_duration"/>
+        <input type="text" class="form-control" name="rental_duration" value="{{wanted_film.rental_duration}}"/>
     </div>
     <div>
         <label class="form-label">Replacement Cost</label>
-        <input type="text" class="form-control" name="replacement_cost"/>
+        <input type="text" class="form-control" name="replacement_cost" value="{{wanted_film.replacement_cost}}"/>
     </div>
 
 
-<input type="submit" class="btn btn-primary" value="Add New Film"/>
+<input type="submit" class="btn btn-primary" value="Update"/>
 </form>
 
 {{/block}}

@@ -149,3 +149,23 @@ For our dynamic web app, we need 2 routes
     * write a test query
     * put the test query into the code and replace all the fixed values with question mark
     * use `connection.execute` with the query as the first argumnet, and an array of values to fill in as the second
+3. If creating for M:M relationship
+    1. Begin a transaction
+    2. Insert into the entity table
+    3. Get the new primary key of the entity that we just inserted
+    4. Insert into the pivot table
+    5. commit if no errors; if there are errors, rollback
+
+## Update
+1. We need to know which entity (ie, which row from the table) we want to Update
+2. Display the existing information for the entity
+3. When the user sumbits the form, then we update the entity
+4. If there are many to many relationships, then 
+   1. we extract the existing relationship from the pivot table
+   2. extract out the NEW relationship from the form
+   3. for each EXISTING MEMBER in the EXISTING RELATIONSHIP:
+      * if the CURRENT EXISTING MEMBER is inside the NEW Relationship --> do nothing
+      * if the CURRENT EXISTING MEMBER is **not inside** the new RELATIONSHIP --> delete pivot table row
+   4. for each MEMBER in the NEW RELATIONSHIP
+      * if the MEMBER is already inside the EXISTING RELATIONSHIP, do nothing
+      * if the MEMBER IS **not inside** the EXISTING RELATIONSHIP, insert into the pivot table 

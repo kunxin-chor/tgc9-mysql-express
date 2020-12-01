@@ -4,7 +4,10 @@
 <h1>Films</h1>
 <ul>
     {{#each films}}
-        <li>{{this.title}} ({{this.release_year}} )</li>
+        <li>
+            {{this.title}} ({{this.release_year}} )
+            <a href="/films/{{this.film_id}}/update">Edit</a> 
+        </li>
     {{/each}}
 
 </ul>
