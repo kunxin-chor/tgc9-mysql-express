@@ -225,9 +225,11 @@ async function main() {
   app.get("/films/create", async (req, res) => {
     let [languages] = await connection.execute("select * from language");
     let [actors] = await connection.execute("select * from actor");
+    let [categories] = await connection.execute("select * from category");
     res.render("create_film", {
       languages: languages,
       actors: actors,
+      categories: categories
     });
   });
 
@@ -253,6 +255,7 @@ async function main() {
         rental_duration,
         replacement_cost,
         actor_id,
+        category_id
       } = req.body;
 
       let [results] = await connection.execute(
@@ -280,6 +283,13 @@ async function main() {
           [eachActor, newFilmId]
         );
       }
+
+      for (let eachCategory of category_id) {
+        connection.execute(`insert into film_category (film_id, category_id) values (?, ?)`, 
+                            [newFilmId, eachCategory]);
+                            
+      }
+
       connection.commit();
       res.redirect("/films");
     } catch (e) {
@@ -297,17 +307,24 @@ async function main() {
       let [actors] = await connection.execute("select * from actor");
       let [existing_actors] = await connection.execute('select actor_id from film_actor where film_id=?', [wanted_film_id])
 
+      let [categories] = await connection.execute("select * from category");
+      let [existingCategories] = await connection.execute("select * from film_category where film_id = ?", [wanted_film_id])
+      existingCategoriesId = existingCategories.map(function(eachCateogry){
+          return eachCateogry.category_id;
+      })
+
       let existing_actor_ids = [];
       for (let a of existing_actors) {
           existing_actor_ids.push(a.actor_id);
       }
-      console.log(existing_actor_ids);
 
       return res.render('update_film', {
           'wanted_film': wanted_film,
           'languages': languages,
           'actors': actors,
-          'existing_actors': existing_actor_ids
+          'existing_actors': existing_actor_ids,
+          'existing_categories': existingCategoriesId,
+          'categories': categories
       })
 
 
@@ -344,6 +361,75 @@ async function main() {
                 ])
             }
         }
+
+        // the easy way
+        // 1. delete all the existing categories from the film
+        await connection.execute("delete from film_category where film_id = ?", [req.params.film_id]);
+
+        // 2. add back all the categories that the user has selected
+        let selectedCategories;
+        // if no categories selected
+        if (!req.body.category_id) {
+            selectedCategories = [];
+        } 
+        // if one category selected
+        if (!Array.isArray(req.body.category_id)) {
+            selectedCategories = [ req.body.category_id];
+        } else {
+            // if > 1 category selected
+            selectedCategories = req.body.category_id;
+        }
+        for (let eachCategoryId of selectedCategories) {
+            connection.execute('insert into film_category (film_id, category_id) values (?, ?)', [
+                req.params.film_id,
+                eachCategoryId
+            ])
+        }
+
+
+        // extract out the existing category_ids of the film
+        /* the complicated but correct way */
+
+        // let [existingCategories] = await connection.execute("select * from film_category where film_id = ?", [req.params.film_id]);
+        // let existingCategoriesId = existingCategories.map(function(category){
+        //     return category.category_id
+        // });
+
+        // let selectedCategoriesId = req.body.category_id;
+        // if (!selectedCategoriesId) {
+        //     selectedCategoriesId = [];
+        // }
+        // if (!Array.isArray(selectedCategoriesId)) {
+        //     selectedCategoriesId = [selectedCategoriesId];
+        // }
+
+        // selectedCategoriesId = selectedCategoriesId.map(function(category_id){
+        //     return parseInt(category_id);
+        // });
+
+        // for (let existingCategoryId of existingCategoriesId) {
+        //     // if this particular existingCategoryId is not in the new categories id, we remove)
+        //     if (selectedCategoriesId.includes(existingCategoryId) == false) {
+        //         await connection.execute(`delete from film_category where film_id = ? and category_id = ?`, [
+        //             req.params.film_id, existingCategoryId
+        //         ])
+        //     }
+        // }
+        // console.log("----- categories id----");
+        // console.log(selectedCategoriesId);
+        // console.log(existingCategoriesId);
+
+    
+
+        // for (let selectedCategoryId of selectedCategoriesId) {
+        //     if (existingCategoriesId.includes(selectedCategoryId) == false) {
+        //         await connection.execute('insert into film_category (film_id, category_id) values (?, ?)',
+        //         [
+        //             req.params.film_id,
+        //             selectedCategoryId
+        //         ]);
+        //     }
+        // }
 
         await connection.execute(`update film set title=?,
                                               description=?,

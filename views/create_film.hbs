@@ -9,6 +9,7 @@
 <script>
 $(document).ready(function() {
     $('#actors').select2();
+    $('#categories').select2();
 });
 </script>
 
@@ -34,6 +35,16 @@ $(document).ready(function() {
             {{/each}}
         </select>
     </div>
+
+    <div>
+        <label class="form-label">Categories</label>
+        <select name="category_id" id="categories" class="form-control" multiple>
+            {{#each categories}}
+                <option value="{{this.category_id}}">{{this.name}}</option>
+            {{/each}}
+        </select>
+    </div>
+
     <div>
         <label class="form-label">Release Year</label>
         <input type="text" class="form-control" name="release_year"/>
