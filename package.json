@@ -17,7 +17,7 @@
   },
   "homepage": "https://github.com/kunxin-chor/tgc9-mysql-express#readme",
   "dependencies": {
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "g": "^2.0.1",
     "handlebars-helpers": "^0.10.0",
     "hbs": "^4.1.1",
